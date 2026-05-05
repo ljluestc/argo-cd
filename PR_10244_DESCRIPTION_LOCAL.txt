@@ -1,0 +1,61 @@
+Fixes #10244
+
+## Summary
+This PR adds health information to application history output so users can determine which deployment revision is currently healthy when viewing history from the CLI/API output.
+
+Today, `argocd app get <app> -o yaml` includes history entries without health status, which makes it difficult to identify the last healthy deployment after one or more failed syncs. This change enriches each history item with the health result captured for that deployment.
+
+## What changed
+- Extend application history entry data to include health status.
+- Populate history health fields when creating deployment history records.
+- Ensure CLI YAML/JSON output includes history health data.
+- Keep behavior backward-compatible for existing consumers (new field is additive).
+
+## Why this is needed
+Operators rely on deployment history to answer:
+- Which revision is currently serving healthy traffic?
+- What was the health of each rollout attempt?
+
+Without health in history, failed syncs can obscure which commit is actually live and healthy.
+
+## Example output (simplified)
+```yaml
+status:
+  history:
+    - id: 12
+      revision: abcdef1
+      deployStartedAt: "2026-05-01T12:00:00Z"
+      deployedAt: "2026-05-01T12:00:32Z"
+      health:
+        status: Healthy
+```
+
+## Testing
+- Add/extend unit tests for history serialization and API output to verify `health.status` is present in history entries.
+- Validate `argocd app get <app> -o yaml` includes the new history health field.
+- Confirm no regressions in history ordering and existing status fields.
+
+## Backward compatibility and risk
+- Additive API/output change only.
+- Existing clients that ignore unknown fields continue to work.
+- Low-to-moderate risk around status marshaling and CLI rendering paths.
+
+## Cherry-pick consideration
+This is an enhancement, not a critical bug fix; no automatic backport requested.
+
+Checklist:
+
+* [x] Either (a) I've created an enhancement proposal and discussed it with the community, (b) this is a bug fix, or (c) this does not need to be in the release notes.
+* [ ] The title of the PR states what changed and the related issues number (used for the release note).
+* [ ] The title of the PR conforms to the Title of the PR guidance.
+* [x] I've included "Closes [ISSUE #]" or "Fixes [ISSUE #]" in the description to automatically close the associated issue.
+* [x] I've updated both the CLI and UI to expose my feature, or I plan to submit a second PR with them.
+* [ ] Does this PR require documentation updates?
+* [ ] I've updated documentation as required by this PR.
+* [ ] I have signed off all my commits as required by DCO.
+* [ ] I have written unit and/or e2e tests for my change. PRs without these are unlikely to be merged.
+* [ ] My build is green.
+* [x] My new feature complies with the feature status guidelines.
+* [x] I have added a brief description of why this PR is necessary and/or what this PR solves.
+* [ ] Optional. My organization is added to USERS.md.
+* [x] Optional. For bug fixes, I've indicated what older releases this fix should be cherry-picked into (this may or may not happen depending on risk/complexity).
