@@ -1812,6 +1812,8 @@ type RevisionHistory struct {
 	Revisions []string `json:"revisions,omitempty" protobuf:"bytes,9,opt,name=revisions"`
 	// InitiatedBy contains information about who initiated the operations
 	InitiatedBy OperationInitiator `json:"initiatedBy,omitempty" protobuf:"bytes,10,opt,name=initiatedBy"`
+	// Health contains the app health status for this revision at the end of the sync operation
+	Health *AppHealthStatus `json:"health,omitempty" protobuf:"bytes,11,opt,name=health"`
 }
 
 // ApplicationWatchEvent contains information about application change.

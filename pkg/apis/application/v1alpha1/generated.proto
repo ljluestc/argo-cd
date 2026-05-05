@@ -2341,6 +2341,9 @@ message RevisionHistory {
 
   // InitiatedBy contains information about who initiated the operations
   optional OperationInitiator initiatedBy = 10;
+
+  // Health contains the app health status for this revision at the end of the sync operation
+  optional AppHealthStatus health = 11;
 }
 
 // RevisionMetadata contains metadata for a specific revision in a Git repository. This field is used by the

@@ -7119,12 +7119,18 @@ func schema_pkg_apis_application_v1alpha1_RevisionHistory(ref common.ReferenceCa
 							Ref:         ref("github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.OperationInitiator"),
 						},
 					},
+					"health": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Health contains the app health status for this revision at the end of the sync operation",
+							Ref:         ref("github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.AppHealthStatus"),
+						},
+					},
 				},
 				Required: []string{"deployedAt", "id"},
 			},
 		},
 		Dependencies: []string{
-			"github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.ApplicationSource", "github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.OperationInitiator", "k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
+			"github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.AppHealthStatus", "github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.ApplicationSource", "github.com/argoproj/argo-cd/v3/pkg/apis/application/v1alpha1.OperationInitiator", "k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
 	}
 }
 

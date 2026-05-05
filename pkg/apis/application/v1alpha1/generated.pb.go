@@ -14528,6 +14528,18 @@ func (m *RevisionHistory) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Health != nil {
+		{
+			size, err := m.Health.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenerated(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x5a
+	}
 	{
 		size, err := m.InitiatedBy.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -19681,6 +19693,10 @@ func (m *RevisionHistory) Size() (n int) {
 	}
 	l = m.InitiatedBy.Size()
 	n += 1 + l + sovGenerated(uint64(l))
+	if m.Health != nil {
+		l = m.Health.Size()
+		n += 1 + l + sovGenerated(uint64(l))
+	}
 	return n
 }
 
@@ -22799,6 +22815,7 @@ func (this *RevisionHistory) String() string {
 		`Sources:` + repeatedStringForSources + `,`,
 		`Revisions:` + fmt.Sprintf("%v", this.Revisions) + `,`,
 		`InitiatedBy:` + strings.Replace(strings.Replace(this.InitiatedBy.String(), "OperationInitiator", "OperationInitiator", 1), `&`, ``, 1) + `,`,
+		`Health:` + strings.Replace(fmt.Sprintf("%v", this.Health), "AppHealthStatus", "AppHealthStatus", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -52576,6 +52593,42 @@ func (m *RevisionHistory) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.InitiatedBy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Health", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenerated
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenerated
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenerated
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Health == nil {
+				m.Health = &AppHealthStatus{}
+			}
+			if err := m.Health.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

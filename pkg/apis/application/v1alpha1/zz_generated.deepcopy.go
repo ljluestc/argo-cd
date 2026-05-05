@@ -4042,6 +4042,11 @@ func (in *RevisionHistory) DeepCopyInto(out *RevisionHistory) {
 		copy(*out, *in)
 	}
 	out.InitiatedBy = in.InitiatedBy
+	if in.Health != nil {
+		in, out := &in.Health, &out.Health
+		*out = new(AppHealthStatus)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 

@@ -1112,9 +1112,11 @@ func (m *appStateManager) persistRevisionHistory(
 	revisions []string,
 	sources []v1alpha1.ApplicationSource,
 	hasMultipleSources bool,
+	healthStatus health.HealthStatusCode,
 	startedAt metav1.Time,
 	initiatedBy v1alpha1.OperationInitiator,
 ) error {
+	historyHealth := &v1alpha1.AppHealthStatus{Status: healthStatus}
 	var nextID int64
 	if len(app.Status.History) > 0 {
 		nextID = app.Status.History.LastRevisionHistory().ID + 1
@@ -1128,6 +1130,7 @@ func (m *appStateManager) persistRevisionHistory(
 			Sources:         sources,
 			Revisions:       revisions,
 			InitiatedBy:     initiatedBy,
+			Health:          historyHealth,
 		})
 	} else {
 		app.Status.History = append(app.Status.History, v1alpha1.RevisionHistory{
@@ -1137,6 +1140,7 @@ func (m *appStateManager) persistRevisionHistory(
 			ID:              nextID,
 			Source:          source,
 			InitiatedBy:     initiatedBy,
+			Health:          historyHealth,
 		})
 	}
 
