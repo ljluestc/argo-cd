@@ -337,6 +337,14 @@ function renderTrafficNode(node: dagre.Node) {
 }
 
 function renderLoadBalancerNode(node: dagre.Node & {label: string; color: string; kind: string}) {
+    const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(node.label);
+    const isIPv6 = /^[0-9a-fA-F:]+$/.test(node.label) && node.label.includes(':');
+    const isIP = isIPv4 || isIPv6;
+    const protocol = isIP ? 'http' : 'https';
+    const urlLabel = isIPv6 ? `[${node.label}]` : node.label;
+    const url = `${protocol}://${urlLabel}`;
+    const typeLabel = isIPv6 ? 'IPv6' : isIPv4 ? 'IP' : 'Hostname';
+
     return (
         <div
             className='application-resource-tree__node application-resource-tree__node--load-balancer'
@@ -344,14 +352,26 @@ function renderLoadBalancerNode(node: dagre.Node & {label: string; color: string
                 left: node.x,
                 top: node.y,
                 width: node.width,
-                height: node.height
-            }}>
+                height: node.height,
+                cursor: 'pointer'
+            }}
+            onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}>
             <div className='application-resource-tree__node-kind-icon'>
-                <i title={node.kind} className={`icon fa fa-network-wired`} style={{color: node.color}} />
+                <i className='icon fa fa-network-wired' style={{color: node.color}} />
             </div>
-            <div className='application-resource-tree__node-content'>
-                <span className='application-resource-tree__node-title'>{node.label}</span>
-            </div>
+            <Tooltip
+                content={
+                    <div>
+                        <div>
+                            <strong>{typeLabel}:</strong> {node.label}
+                        </div>
+                        <div>Click to open in browser</div>
+                    </div>
+                }>
+                <div className='application-resource-tree__node-content'>
+                    <span className='application-resource-tree__node-title'>{node.label}</span>
+                </div>
+            </Tooltip>
         </div>
     );
 }

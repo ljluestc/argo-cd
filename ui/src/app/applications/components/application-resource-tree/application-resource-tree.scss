@@ -117,8 +117,11 @@
         }
 
         &--load-balancer {
-            cursor: default;
             background-color: $argo-color-teal-2;
+
+            &:hover {
+                filter: brightness(0.95);
+            }
         }
 
         &--expansion {
